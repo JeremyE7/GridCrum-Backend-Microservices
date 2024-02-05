@@ -12,6 +12,7 @@ model User {
   name     String
   email    String @unique
   password String
+  projects Project[]
 }
 
 model ProjectTag {
@@ -30,6 +31,8 @@ model Project {
   image       String
   springs     Spring[]
   tags        ProjectTag[]
+  user       User     @relation(fields: [userId], references: [id])
+  userId      Int
 }
 
 model Spring {
