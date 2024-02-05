@@ -28,9 +28,16 @@ export class ProjectService {
 
     const project = await this.prisma.project.create({
       data: {
-        ...projectAux,
+        name: projectAux.name,
+        description: projectAux.description,
+        image: projectAux.image,
+        user: {
+          connect: {
+            id: projectAux.userId,
+          },
+        },
         tags: {
-          connect: tags,
+          connect: tags.map((tag) => ({ id: tag.id })),
         },
       },
       include: {
