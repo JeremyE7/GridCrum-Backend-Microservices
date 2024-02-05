@@ -6,6 +6,17 @@ import { Project, ProjectTag } from '@prisma/client'
 export class ProjectService {
   constructor(private prisma: PrismaService) {}
 
+  async createTagProject(tag: ProjectTag): Promise<{ msg: string; tag: ProjectTag }> {
+    const tagProject = await this.prisma.projectTag.create({
+      data: {
+        name: tag.name,
+        color: tag.color,
+        project: null,
+      },
+    })
+    return { msg: 'Tag creado', tag: tagProject }
+  }
+
   async getAllProejcts(): Promise<{ msg: string; projects: Project[] } | { msg: string; error: any }> {
     try {
       const projects = await this.prisma.project.findMany()
