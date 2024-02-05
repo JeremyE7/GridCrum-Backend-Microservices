@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common'
 import { GatewayService } from './gateway.service'
-import { Item } from '@prisma/client'
+import { Project, ProjectTag } from '@prisma/client'
 import { Request } from 'express'
 import { JwtMiddleware } from './jwt-auth/jwt-auth.middleware'
 
@@ -10,8 +10,34 @@ export class GatewayController {
 
   @Get('api/projects')
   @UseGuards(JwtMiddleware)
-  getAllProjects(): Promise<Item[]> {
+  getAllProjects(): Promise<Project[]> {
     return this.gatewayService.getAllProjects()
+  }
+
+  @Get('api/projects/user/:userId')
+  @UseGuards(JwtMiddleware)
+  getAllUserProjects(
+    @Param('userId') userId: number,
+  ): Promise<{ msg: string; projects: Project[] } | { msg: string; error: any }> {
+    return this.gatewayService.getAllUserProjects(userId)
+  }
+
+  @Get('api/projects/tag/:userId')
+  @UseGuards(JwtMiddleware)
+  getAllUserProjectTags(
+    @Param('userId') userId: string,
+  ): Promise<{ msg: string; tags: ProjectTag[] } | { msg: string; error: any }> {
+    return this.gatewayService.getAllUserProjectTags(userId)
+  }
+
+  @Post('api/projects')
+  createProject(@Body() req: Request) {
+    return this.gatewayService.createProject(req)
+  }
+
+  @Post('api/projects/tag')
+  createTagProject(@Body() req: Request) {
+    return this.gatewayService.createTagProject(req)
   }
 
   @Post('api/user')

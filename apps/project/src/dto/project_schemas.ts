@@ -22,3 +22,17 @@ export class relateATagWithProjectDto {
   @IsNotEmpty()
   name: string
 }
+
+export class ProjectTagDto {
+  @IsNotEmpty()
+  @IsString()
+  name: string
+
+  @IsNotEmpty()
+  @IsString()
+  colorBackground: string
+
+  @IsNotEmpty()
+  @IsString()
+  colorText: string
+}

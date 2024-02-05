@@ -1,22 +1,15 @@
 import { NestFactory } from '@nestjs/core'
 import { UserModule } from './user.module'
-import {
-  MicroserviceOptions,
-  RpcException,
-  Transport,
-} from '@nestjs/microservices'
+import { MicroserviceOptions, RpcException, Transport } from '@nestjs/microservices'
 import { ValidationPipe } from '@nestjs/common'
 
 async function bootstrap() {
-  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-    UserModule,
-    {
-      transport: Transport.TCP,
-      options: {
-        port: 3002,
-      },
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(UserModule, {
+    transport: Transport.TCP,
+    options: {
+      port: 3002,
     },
-  )
+  })
   app.useGlobalPipes(
     new ValidationPipe({
       exceptionFactory(errors) {

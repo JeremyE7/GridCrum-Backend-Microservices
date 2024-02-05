@@ -6,16 +6,55 @@ import { Project, ProjectTag } from '@prisma/client'
 export class ProjectService {
   constructor(private prisma: PrismaService) {}
 
-  async createTagProject(tag: ProjectTag): Promise<{ msg: string; tag: ProjectTag }> {
-    const tagProject = await this.prisma.projectTag.create({
-      data: {
-        name: tag.name,
-        colorBackground: tag.colorBackground,
-        colorText: tag.colorText,
-        project: null,
-      },
-    })
-    return { msg: 'Tag creado', tag: tagProject }
+  async createTagProject(tag: Omit<ProjectTag, 'id' | 'projectId'>): Promise<{ msg: string; tag: ProjectTag }> {
+    try {
+      const tagProject = await this.prisma.projectTag.create({
+        data: {
+          name: tag.name,
+          colorBackground: tag.colorBackground,
+          colorText: tag.colorText,
+        },
+      })
+      return { msg: 'Tag creado', tag: tagProject }
+    } catch (error) {
+      if ((error.name = 'PrismaClientKnownRequestError')) {
+        return { msg: 'Ya existe un tag con ese nombre', tag: null }
+      }
+    }
+  }
+
+  async getAllUserProjectTags(
+    userId: string,
+  ): Promise<{ msg: string; tags: ProjectTag[] } | { msg: string; error: any }> {
+    try {
+      const tags = await this.prisma.projectTag.findMany({
+        where: {
+          project: {
+            userId: Number(userId),
+          },
+        },
+      })
+      return { msg: 'Solicitud exitosa', tags }
+    } catch (error) {
+      return { msg: 'Error en la solicitud', error: error.errors }
+    }
+  }
+
+  async getAllUserProjects(
+    userId: string,
+  ): Promise<{ msg: string; projects: Project[] } | { msg: string; error: any }> {
+    try {
+      const projects = await this.prisma.project.findMany({
+        where: {
+          userId: Number(userId),
+        },
+      })
+      return { msg: 'Solicitud exitosa', projects }
+    } catch (error) {
+      console.log('Error en la solicitud', error)
+
+      return { msg: 'Error en la solicitud', error: error }
+    }
   }
 
   async getAllProejcts(): Promise<{ msg: string; projects: Project[] } | { msg: string; error: any }> {
@@ -39,6 +78,10 @@ export class ProjectService {
         },
       },
     })
+
+    if (tags.length !== projectAux.tags.length) {
+      return { msg: 'Error en la solicitud', project: null, error: 'No se encontraron todos los tags' }
+    }
 
     const project = await this.prisma.project.create({
       data: {

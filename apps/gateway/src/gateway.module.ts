@@ -22,6 +22,6 @@ import { JwtMiddleware } from './jwt-auth/jwt-auth.middleware'
 })
 export class GatewayModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(JwtMiddleware).forRoutes({ path: 'api/projects', method: RequestMethod.ALL })
+    consumer.apply(JwtMiddleware).forRoutes({ path: 'api/projects/*', method: RequestMethod.ALL })
   }
 }
