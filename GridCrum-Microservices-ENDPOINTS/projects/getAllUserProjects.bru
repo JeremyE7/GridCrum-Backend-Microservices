@@ -1,0 +1,19 @@
+meta {
+  name: getAllUserProjects
+  type: http
+  seq: 4
+}
+
+get {
+  url: http://localhost:3001/api/projects/user/3
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJqZXJlbXlAZ21haWwuY29tIiwibmFtZSI6ImplcmVteSIsImlhdCI6MTcwNzE1MzU4NSwiZXhwIjoxNzA3MTU3MTg1fQ.Bi-z9cGXd2ALnP6dGkGnHlaDFmwzOEATjsSdjhD613w
+}
+
+auth:bearer {
+  token: 
+}

@@ -1,0 +1,33 @@
+meta {
+  name: createProject
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3001/api/projects
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJqZXJlbXlAZ21haWwuY29tIiwibmFtZSI6ImplcmVteSIsImlhdCI6MTcwNzE1MTQ3MiwiZXhwIjoxNzA3MTU1MDcyfQ.YYEvfiCpWEP67nfLN9LLVsCk6vNUBh1HAELRXMlN4b0
+}
+
+auth:bearer {
+  token: 
+}
+
+body:json {
+  {
+    "name": "proyecto 2",
+    "description": "test de creacion de proyectos",
+    "image": "https://imgs.search.brave.com/8h89x5yCdO2MN-O5OjkAo_Y0hgUeQrSO8I9oqAw_-So/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/cHJlbWl1bS1waG90/by9lbmdpbmVlci1t/ZWV0aW5nLWFyY2hp/dGVjdHVyYWwtcHJv/amVjdF8xNDIxLTM3/NzUuanBnP3NpemU9/NjI2JmV4dD1qcGc",
+    "userId": 3,
+    "tags": [
+      {
+        "name": "Programacion"
+      }
+    ]
+  }
+}

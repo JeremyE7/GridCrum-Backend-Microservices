@@ -1,0 +1,27 @@
+meta {
+  name: createTagProject
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:3001/api/projects/tag
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJqZXJlbXlAZ21haWwuY29tIiwibmFtZSI6ImplcmVteSIsImlhdCI6MTcwNzE1MTQ3MiwiZXhwIjoxNzA3MTU1MDcyfQ.YYEvfiCpWEP67nfLN9LLVsCk6vNUBh1HAELRXMlN4b0
+}
+
+auth:bearer {
+  token: 
+}
+
+body:json {
+  {
+    "name": "Personal",
+    "colorBackground": "#a0db8e",
+    "colorText": "#222222"
+  }
+}
