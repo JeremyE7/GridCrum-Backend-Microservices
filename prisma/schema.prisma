@@ -8,31 +8,30 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
+  id       Int       @id @default(autoincrement())
   name     String
-  email    String @unique
+  email    String    @unique
   password String
   projects Project[]
 }
 
 model ProjectTag {
-  id       Int       @id @default(autoincrement())
-  name     String    @unique
-  color    String
-  projectId   Int
-  project     Project      @relation(fields: [projectId], references: [id])
+  id        Int     @id @default(autoincrement())
+  name      String  @unique
+  color     String
+  projectId Int
+  project   Project @relation(fields: [projectId], references: [id])
 }
 
-
 model Project {
-  id          Int      @id @default(autoincrement())
+  id          Int          @id @default(autoincrement())
   name        String
   description String
   image       String
   springs     Spring[]
   tags        ProjectTag[]
-  user       User     @relation(fields: [userId], references: [id])
-  userId      Int
+  user        User?        @relation(fields: [userId], references: [id])
+  userId      Int?
 }
 
 model Spring {
@@ -48,11 +47,11 @@ model Spring {
 }
 
 model TaskTag {
-  id       Int       @id @default(autoincrement())
-  name     String    @unique
-  color    String
-  taskId   Int
-  task     Task      @relation(fields: [taskId], references: [id])
+  id     Int    @id @default(autoincrement())
+  name   String @unique
+  color  String
+  taskId Int
+  task   Task   @relation(fields: [taskId], references: [id])
 }
 
 model Task {
@@ -77,7 +76,7 @@ model Reminder {
   endDate     DateTime
   state       String
   taskId      Int
-  task       Task     @relation(fields: [taskId], references: [id])
+  task        Task     @relation(fields: [taskId], references: [id])
 }
 
 model Board {
@@ -88,30 +87,28 @@ model Board {
   endDate     DateTime
   state       String
   items       Item[]
-  task       Task      @relation(fields: [taskId], references: [id])
-  taskId      Int @unique
+  task        Task     @relation(fields: [taskId], references: [id])
+  taskId      Int      @unique
 }
 
 model Item {
-  id         Int       @id @default(autoincrement())
-  i          String
-  x          Int
-  y          Int
-  w          Int
-  h          Int
-  board      Board     @relation(fields: [boardId], references: [id])
-  boardId    Int      @unique
-  imgId      Int?      @unique
-  videoId    Int?      @unique
-  audioId    Int?      @unique
-  linkId     Int?      @unique
-  link       Link?     @relation(fields: [linkId], references: [id])
-  audio      Audio?    @relation(fields: [audioId], references: [id])
-  video      Video?    @relation(fields: [videoId], references: [id])
-  img        Img?      @relation(fields: [imgId], references: [id])
+  id      Int    @id @default(autoincrement())
+  i       String
+  x       Int
+  y       Int
+  w       Int
+  h       Int
+  board   Board  @relation(fields: [boardId], references: [id])
+  boardId Int    @unique
+  imgId   Int?   @unique
+  videoId Int?   @unique
+  audioId Int?   @unique
+  linkId  Int?   @unique
+  link    Link?  @relation(fields: [linkId], references: [id])
+  audio   Audio? @relation(fields: [audioId], references: [id])
+  video   Video? @relation(fields: [videoId], references: [id])
+  img     Img?   @relation(fields: [imgId], references: [id])
 }
-
-
 
 model Img {
   id          Int    @id @default(autoincrement())
