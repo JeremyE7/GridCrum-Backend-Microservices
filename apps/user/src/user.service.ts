@@ -54,7 +54,6 @@ export class UserService {
         email,
       },
     })
-    console.log('user', user)
 
     if (!user) {
       return { msg: 'User not found', user: null }
