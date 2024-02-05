@@ -16,7 +16,7 @@ model User {
 
 model ProjectTag {
   id       Int       @id @default(autoincrement())
-  name     String
+  name     String    @unique
   color    String
   projectId   Int
   project     Project      @relation(fields: [projectId], references: [id])
@@ -46,7 +46,7 @@ model Spring {
 
 model TaskTag {
   id       Int       @id @default(autoincrement())
-  name     String
+  name     String    @unique
   color    String
   taskId   Int
   task     Task      @relation(fields: [taskId], references: [id])
