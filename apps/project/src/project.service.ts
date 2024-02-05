@@ -10,7 +10,8 @@ export class ProjectService {
     const tagProject = await this.prisma.projectTag.create({
       data: {
         name: tag.name,
-        color: tag.color,
+        colorBackground: tag.colorBackground,
+        colorText: tag.colorText,
         project: null,
       },
     })
@@ -27,7 +28,9 @@ export class ProjectService {
   }
 
   async createProject(
-    projectAux: Project & { tags: ProjectTag[] },
+    projectAux: Omit<Project, 'id'> & {
+      tags: Omit<ProjectTag, 'id' | 'colorText' | 'colorBackground' | 'projectId'>[]
+    },
   ): Promise<{ msg: string; project: Project; error?: string }> {
     const tags = await this.prisma.projectTag.findMany({
       where: {
