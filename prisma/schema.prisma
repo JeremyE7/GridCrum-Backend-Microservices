@@ -16,11 +16,12 @@ model User {
 }
 
 model ProjectTag {
-  id        Int     @id @default(autoincrement())
-  name      String  @unique
-  color     String
-  projectId Int
-  project   Project @relation(fields: [projectId], references: [id])
+  id              Int     @id @default(autoincrement())
+  name            String  @unique
+  colorBackground String
+  colorText       String
+  projectId       Int
+  project         Project @relation(fields: [projectId], references: [id])
 }
 
 model Project {
