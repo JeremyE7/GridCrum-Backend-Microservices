@@ -12,60 +12,24 @@ model User {
   name     String
   email    String @unique
   password String
-  items    Item[]
-}
-
-model Item {
-  id         Int       @id @default(autoincrement())
-  i          String
-  x          Int
-  y          Int
-  w          Int
-  h          Int
-  typeId     Int
-  boardId    Int       @unique
-  taskId     Int?      @unique
-  imgId      Int?      @unique
-  videoId    Int?      @unique
-  audioId    Int?      @unique
-  linkId     Int?      @unique
-  projectId  Int?      @unique
-  reminderId Int?      @unique
-  userId     Int
-  user       User      @relation(fields: [userId], references: [id])
-  reminder   Reminder? @relation(fields: [reminderId], references: [id])
-  project    Project?  @relation(fields: [projectId], references: [id])
-  link       Link?     @relation(fields: [linkId], references: [id])
-  audio      Audio?    @relation(fields: [audioId], references: [id])
-  video      Video?    @relation(fields: [videoId], references: [id])
-  img        Img?      @relation(fields: [imgId], references: [id])
-  task       Task?     @relation(fields: [taskId], references: [id])
-  board      Board     @relation(fields: [boardId], references: [id])
-  type       Type      @relation(fields: [typeId], references: [id])
-}
-
-model Type {
-  id    Int    @id @default(autoincrement())
-  name  String
-  items Item[]
+  tags     Tag[] 
 }
 
 model Tag {
   id       Int       @id @default(autoincrement())
   name     String
   color    String
-  projects Project[] @relation("ProjectToTag")
-  tasks    Task[]    @relation("TagToTask")
+  userId   Int
+  user     User      @relation(fields: [userId], references: [id])
 }
+
 
 model Project {
   id          Int      @id @default(autoincrement())
   name        String
   description String
   image       String
-  item        Item?
   springs     Spring[]
-  tags        Tag[]    @relation("ProjectToTag")
 }
 
 model Spring {
@@ -88,20 +52,9 @@ model Task {
   endDate     DateTime
   state       String
   springId    Int
-  items       Item?
-  reminders   Reminder[]
   spring      Spring     @relation(fields: [springId], references: [id])
-  tags        Tag[]      @relation("TagToTask")
-}
-
-model Board {
-  id          Int      @id @default(autoincrement())
-  name        String
-  description String
-  startDate   DateTime
-  endDate     DateTime
-  state       String
-  items       Item?
+  board       Board?
+  reminders   Reminder[]
 }
 
 model Reminder {
@@ -112,9 +65,41 @@ model Reminder {
   endDate     DateTime
   state       String
   taskId      Int
-  item        Item?
-  tasks       Task     @relation(fields: [taskId], references: [id])
+  task       Task     @relation(fields: [taskId], references: [id])
 }
+
+model Board {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  startDate   DateTime
+  endDate     DateTime
+  state       String
+  items       Item[]
+  task       Task      @relation(fields: [taskId], references: [id])
+  taskId      Int @unique
+}
+
+model Item {
+  id         Int       @id @default(autoincrement())
+  i          String
+  x          Int
+  y          Int
+  w          Int
+  h          Int
+  board      Board     @relation(fields: [boardId], references: [id])
+  boardId    Int      @unique
+  imgId      Int?      @unique
+  videoId    Int?      @unique
+  audioId    Int?      @unique
+  linkId     Int?      @unique
+  link       Link?     @relation(fields: [linkId], references: [id])
+  audio      Audio?    @relation(fields: [audioId], references: [id])
+  video      Video?    @relation(fields: [videoId], references: [id])
+  img        Img?      @relation(fields: [imgId], references: [id])
+}
+
+
 
 model Img {
   id          Int    @id @default(autoincrement())
