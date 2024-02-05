@@ -1,0 +1,149 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DEV_DATABASE_URL")
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  name     String
+  email    String @unique
+  password String
+  items    Item[]
+}
+
+model Item {
+  id         Int       @id @default(autoincrement())
+  i          String
+  x          Int
+  y          Int
+  w          Int
+  h          Int
+  typeId     Int
+  boardId    Int       @unique
+  taskId     Int?      @unique
+  imgId      Int?      @unique
+  videoId    Int?      @unique
+  audioId    Int?      @unique
+  linkId     Int?      @unique
+  projectId  Int?      @unique
+  reminderId Int?      @unique
+  userId     Int
+  user       User      @relation(fields: [userId], references: [id])
+  reminder   Reminder? @relation(fields: [reminderId], references: [id])
+  project    Project?  @relation(fields: [projectId], references: [id])
+  link       Link?     @relation(fields: [linkId], references: [id])
+  audio      Audio?    @relation(fields: [audioId], references: [id])
+  video      Video?    @relation(fields: [videoId], references: [id])
+  img        Img?      @relation(fields: [imgId], references: [id])
+  task       Task?     @relation(fields: [taskId], references: [id])
+  board      Board     @relation(fields: [boardId], references: [id])
+  type       Type      @relation(fields: [typeId], references: [id])
+}
+
+model Type {
+  id    Int    @id @default(autoincrement())
+  name  String
+  items Item[]
+}
+
+model Tag {
+  id       Int       @id @default(autoincrement())
+  name     String
+  color    String
+  projects Project[] @relation("ProjectToTag")
+  tasks    Task[]    @relation("TagToTask")
+}
+
+model Project {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  image       String
+  item        Item?
+  springs     Spring[]
+  tags        Tag[]    @relation("ProjectToTag")
+}
+
+model Spring {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  startDate   DateTime
+  endDate     DateTime
+  state       String
+  proyectId   Int
+  proyect     Project  @relation(fields: [proyectId], references: [id])
+  tasks       Task[]
+}
+
+model Task {
+  id          Int        @id @default(autoincrement())
+  name        String
+  description String
+  startDate   DateTime
+  endDate     DateTime
+  state       String
+  springId    Int
+  items       Item?
+  reminders   Reminder[]
+  spring      Spring     @relation(fields: [springId], references: [id])
+  tags        Tag[]      @relation("TagToTask")
+}
+
+model Board {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  startDate   DateTime
+  endDate     DateTime
+  state       String
+  items       Item?
+}
+
+model Reminder {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  startDate   DateTime
+  endDate     DateTime
+  state       String
+  taskId      Int
+  item        Item?
+  tasks       Task     @relation(fields: [taskId], references: [id])
+}
+
+model Img {
+  id          Int    @id @default(autoincrement())
+  name        String
+  description String
+  url         String
+  item        Item?
+}
+
+model Video {
+  id          Int    @id @default(autoincrement())
+  name        String
+  description String
+  url         String
+  item        Item?
+}
+
+model Audio {
+  id          Int    @id @default(autoincrement())
+  name        String
+  description String
+  url         String
+  item        Item?
+}
+
+model Link {
+  id          Int    @id @default(autoincrement())
+  name        String
+  description String
+  url         String
+  item        Item?
+}
