@@ -1,29 +1,41 @@
 import { PrismaService } from '@app/prisma'
 import { Injectable } from '@nestjs/common'
-import { Item, Project } from '@prisma/client'
+import { Project, ProjectTag } from '@prisma/client'
 
 @Injectable()
 export class ProjectService {
   constructor(private prisma: PrismaService) {}
 
-  async getAllProejcts(): Promise<{ msg: string; projects: Item[] } | { msg: string; error: any }> {
+  async getAllProejcts(): Promise<{ msg: string; projects: Project[] } | { msg: string; error: any }> {
     try {
-      const projects = await this.prisma.item.findMany({
-        where: {
-          type: {
-            name: 'project',
-          },
-        },
-      })
+      const projects = await this.prisma.project.findMany()
       return { msg: 'Solicitud exitosa', projects }
     } catch (error) {
       return { msg: 'Error en la solicitud', error: error.errors }
     }
   }
 
-  async createProject(projectAux: Project): Promise<{ msg: string; project: Project; error?: string }> {
+  async createProject(
+    projectAux: Project & { tags: ProjectTag[] },
+  ): Promise<{ msg: string; project: Project; error?: string }> {
+    const tags = await this.prisma.projectTag.findMany({
+      where: {
+        name: {
+          in: projectAux.tags.map((tag) => tag.name),
+        },
+      },
+    })
+
     const project = await this.prisma.project.create({
-      data: projectAux,
+      data: {
+        ...projectAux,
+        tags: {
+          connect: tags,
+        },
+      },
+      include: {
+        tags: true,
+      },
     })
 
     return { msg: 'Proyecto creado', project }
