@@ -30,9 +30,17 @@ export class GatewayService {
     }
   }
 
-  async createTagProject(req: any): Promise<{ msg: string; tag: ProjectTag }> {
+  async createTagProject(req: any, userId: number): Promise<{ msg: string; tag: ProjectTag }> {
     try {
-      return await lastValueFrom(this.clientProject.send('create_tag_project', req))
+      return await lastValueFrom(this.clientProject.send('create_tag_project', { tag: req, userId }))
+    } catch (error) {
+      throw new HttpException({ msg: error, tag: null }, HttpStatus.BAD_REQUEST)
+    }
+  }
+
+  async deleteTagProject(req: any): Promise<{ msg: string; tag: ProjectTag }> {
+    try {
+      return await lastValueFrom(this.clientProject.send('delete_tag_project', req))
     } catch (error) {
       throw new HttpException({ msg: error, tag: null }, HttpStatus.BAD_REQUEST)
     }
