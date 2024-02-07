@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString, IsUrl } from 'class-validator'
+import { IsNotEmpty, IsNotEmptyObject, IsNumber, IsString, IsUrl } from 'class-validator'
 
 export class createProjectDto {
   @IsString()
@@ -24,6 +24,7 @@ export class relateATagWithProjectDto {
 }
 
 export class ProjectTagDto {
+  @IsNotEmptyObject()
   @IsNotEmpty()
   @IsString()
   name: string

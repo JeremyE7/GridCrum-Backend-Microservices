@@ -34,7 +34,18 @@ export class ProjectController {
   }
 
   @MessagePattern('create_tag_project')
-  async createTagProject(tag: ProjectTagDto): Promise<{ msg: string; tag: ProjectTag; error?: string }> {
-    return await this.projectService.createTagProject(tag)
+  async createTagProject({
+    tag,
+    userId,
+  }: {
+    tag: ProjectTagDto
+    userId: string
+  }): Promise<{ msg: string; tag: ProjectTag; error?: string }> {
+    return await this.projectService.createTagProject(tag, userId)
+  }
+
+  @MessagePattern('delete_tag_project')
+  async deleteTagProject(tagId: string): Promise<{ msg: string; tag: ProjectTag; error?: string }> {
+    return await this.projectService.deleteTagProject(tagId)
   }
 }
