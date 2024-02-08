@@ -117,6 +117,10 @@ export class ProjectService {
         name: projectAux.name,
         description: projectAux.description,
         image: projectAux.image,
+        h: projectAux.h,
+        w: projectAux.w,
+        x: projectAux.x,
+        y: projectAux.y,
         user: {
           connect: {
             id: projectAux.userId,

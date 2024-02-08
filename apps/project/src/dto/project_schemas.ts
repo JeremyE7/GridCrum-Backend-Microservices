@@ -1,6 +1,18 @@
 import { IsNotEmpty, IsNotEmptyObject, IsNumber, IsString, IsUrl } from 'class-validator'
 
 export class createProjectDto {
+  @IsNotEmpty()
+  @IsNumber()
+  x: number
+  @IsNotEmpty()
+  @IsNumber()
+  y: number
+  @IsNotEmpty()
+  @IsNumber()
+  h: number
+  @IsNotEmpty()
+  @IsNumber()
+  w: number
   @IsString()
   @IsNotEmpty()
   name: string
