@@ -8,10 +8,11 @@ export class JwtMiddleware implements NestMiddleware {
 
   async use(req: Request, res: Response, next: NextFunction) {
     const token = req.headers.authorization
-    console.log('token', token)
+    console.log(token)
 
     if (!token) {
-      return res.status(401).json({ message: 'Unauthorized' })
+      console.log('Unauthorized')
+      return res.status(401).json({ message: 'Unauthorized', error: 'You dont have access to this service' })
     }
 
     try {
@@ -19,7 +20,7 @@ export class JwtMiddleware implements NestMiddleware {
       req.user = decoded // Puedes acceder a la información del usuario desde req.user en los controladores
       next()
     } catch (err) {
-      return res.status(401).json({ message: 'Unauthorized' })
+      return res.status(401).json({ message: 'Unauthorized', error: err })
     }
   }
 }

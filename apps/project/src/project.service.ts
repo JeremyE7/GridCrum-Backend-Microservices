@@ -26,6 +26,7 @@ export class ProjectService {
       return { msg: 'Tag creado', tag: tagProject }
     } catch (error) {
       if ((error.name = 'PrismaClientKnownRequestError')) {
+        console.log(error)
         return { msg: 'Ya existe un tag con ese nombre', tag: null }
       }
     }

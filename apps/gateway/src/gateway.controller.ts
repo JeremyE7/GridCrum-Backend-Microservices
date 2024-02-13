@@ -37,6 +37,7 @@ export class GatewayController {
 
   @Post('api/projects/tag/:userId')
   createTagProject(@Body() req: Request, @Param('userId') userId: number) {
+    console.log(req)
     return this.gatewayService.createTagProject(req, userId)
   }
 
