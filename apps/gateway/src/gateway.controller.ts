@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common'
 import { GatewayService } from './gateway.service'
 import { Project, ProjectTag } from '@prisma/client'
 import { Request } from 'express'
@@ -30,9 +30,16 @@ export class GatewayController {
     return this.gatewayService.getAllUserProjectTags(userId)
   }
 
-  @Post('api/projects')
-  createProject(@Body() req: Request) {
-    return this.gatewayService.createProject(req)
+  @Post('api/projects/:userId')
+  createProject(@Body() req: Request, @Param('userId') userId: string) {
+    console.log(req, userId)
+
+    return this.gatewayService.createProject(req, userId)
+  }
+
+  @Put('api/projects/:userId')
+  updateProjects(@Body() req: Request, @Param('userId') userId: string) {
+    return this.gatewayService.updateProjects(req, userId)
   }
 
   @Post('api/projects/tag/:userId')

@@ -28,9 +28,22 @@ export class ProjectController {
   }
 
   @MessagePattern('create_project')
-  async createProject(project: createProjectDto): Promise<{ msg: string; project: Project; error?: string }> {
-    console.log('create_project', project)
-    return await this.projectService.createProject(project)
+  async createProject(req: {
+    project: createProjectDto
+    userId: string
+  }): Promise<{ msg: string; project: Project; error?: string }> {
+    console.log('create_project', req.project, req.userId)
+    return await this.projectService.createProject(req.project, req.userId)
+  }
+
+  @MessagePattern('update_projects')
+  async updateProjects(req: {
+    projects: (Project & { tags: ProjectTag[] })[]
+    userId: string
+  }): Promise<{ msg: string; projects: Project[]; error?: string }> {
+    console.log('update_projects', req.projects, req.userId)
+
+    return await this.projectService.updateUserProjects(req.projects, req.userId)
   }
 
   @MessagePattern('create_tag_project')

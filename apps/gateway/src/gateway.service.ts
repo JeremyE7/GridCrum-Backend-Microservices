@@ -22,11 +22,19 @@ export class GatewayService {
     return lastValueFrom(this.clientProject.send('get_all_user_project_tags', userId))
   }
 
-  async createProject(req: any): Promise<{ msg: string; project: Project }> {
+  async createProject(req: any, userId: string): Promise<{ msg: string; project: Project }> {
     try {
-      return await lastValueFrom(this.clientProject.send('create_project', req))
+      return await lastValueFrom(this.clientProject.send('create_project', { project: req, userId }))
     } catch (error) {
       throw new HttpException({ msg: error, project: null }, HttpStatus.BAD_REQUEST)
+    }
+  }
+
+  async updateProjects(req: any, userId: string): Promise<{ msg: string; projects: Project[] }> {
+    try {
+      return await lastValueFrom(this.clientProject.send('update_projects', { projects: req, userId }))
+    } catch (error) {
+      throw new HttpException({ msg: error, projects: null }, HttpStatus.BAD_REQUEST)
     }
   }
 

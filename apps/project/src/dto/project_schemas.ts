@@ -22,17 +22,8 @@ export class createProjectDto {
   @IsString()
   @IsUrl()
   image: string
-  @IsNumber()
   @IsNotEmpty()
-  userId: number
-  @IsNotEmpty()
-  tags: relateATagWithProjectDto[]
-}
-
-export class relateATagWithProjectDto {
-  @IsString()
-  @IsNotEmpty()
-  name: string
+  tags: string[]
 }
 
 export class ProjectTagDto {

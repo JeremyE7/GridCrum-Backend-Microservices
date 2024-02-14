@@ -78,6 +78,9 @@ export class ProjectService {
         where: {
           userId: Number(userId),
         },
+        include: {
+          tags: true,
+        },
       })
       return { msg: 'Solicitud exitosa', projects }
     } catch (error) {
@@ -89,7 +92,11 @@ export class ProjectService {
 
   async getAllProejcts(): Promise<{ msg: string; projects: Project[] } | { msg: string; error: any }> {
     try {
-      const projects = await this.prisma.project.findMany()
+      const projects = await this.prisma.project.findMany({
+        include: {
+          tags: true,
+        },
+      })
       return { msg: 'Solicitud exitosa', projects }
     } catch (error) {
       return { msg: 'Error en la solicitud', error: error.errors }
@@ -97,14 +104,17 @@ export class ProjectService {
   }
 
   async createProject(
-    projectAux: Omit<Project, 'id'> & {
-      tags: Omit<ProjectTag, 'id' | 'colorText' | 'colorBackground' | 'projectId' | 'userId'>[]
+    projectAux: Omit<Project, 'id' | 'userId'> & {
+      tags: string[]
     },
+    userId: string,
   ): Promise<{ msg: string; project: Project; error?: string }> {
+    console.log(projectAux.tags)
+
     const tags = await this.prisma.projectTag.findMany({
       where: {
         name: {
-          in: projectAux.tags.map((tag) => tag.name),
+          in: projectAux.tags,
         },
       },
     })
@@ -124,7 +134,7 @@ export class ProjectService {
         y: projectAux.y,
         user: {
           connect: {
-            id: projectAux.userId,
+            id: Number(userId),
           },
         },
         tags: {
@@ -136,6 +146,71 @@ export class ProjectService {
       },
     })
 
+    console.log(project)
+
     return { msg: 'Proyecto creado', project }
+  }
+
+  async updateUserProjects(
+    projectsToUpdate: (Project & { tags: ProjectTag[] })[],
+    userId: string,
+  ): Promise<{ msg: string; projects: Project[] | null }> {
+    try {
+      console.log(projectsToUpdate, userId)
+
+      const user = await this.prisma.user.findUnique({
+        where: {
+          id: Number(userId),
+        },
+      })
+
+      if (!user) return { msg: 'Usuario no encontrado', projects: null }
+      const updatedProjects = await Promise.all(
+        projectsToUpdate.map(async (project) => {
+          console.log(project.tags)
+
+          const tags = await this.prisma.projectTag.findMany({
+            where: {
+              name: {
+                in: project.tags.map((tag) => tag.name),
+              },
+            },
+          })
+
+          if (tags.length !== project.tags.length) {
+            return null
+          }
+
+          const updatedProject = await this.prisma.project.update({
+            where: {
+              id: project.id,
+            },
+            data: {
+              name: project.name,
+              description: project.description,
+              image: project.image,
+              h: project.h,
+              w: project.w,
+              x: project.x,
+              y: project.y,
+              tags: {
+                set: tags.map((tag) => ({ id: tag.id })),
+              },
+            },
+            include: {
+              tags: true,
+            },
+          })
+
+          return updatedProject
+        }),
+      )
+
+      return { msg: 'Proyectos actualizados', projects: updatedProjects as unknown as Project[] }
+    } catch (error) {
+      console.log('Error en la solicitud', error)
+
+      return { msg: 'Error en la solicitud', projects: null }
+    }
   }
 }
