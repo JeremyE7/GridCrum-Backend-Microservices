@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNotEmptyObject, IsNumber, IsString, IsUrl } from 'class-validator'
+import { IsIn, IsNotEmpty, IsNotEmptyObject, IsNumber, IsOptional, IsString, IsUrl } from 'class-validator'
 
 export class createProjectDto {
   @IsNotEmpty()
@@ -39,4 +39,94 @@ export class ProjectTagDto {
   @IsNotEmpty()
   @IsString()
   colorText: string
+}
+
+export class SpringDto {
+  @IsNotEmpty()
+  @IsString()
+  name: string
+  @IsNotEmpty()
+  @IsString()
+  description: string
+  @IsNotEmpty()
+  @IsString()
+  startDate: Date
+  @IsNotEmpty()
+  @IsString()
+  endDate: Date
+  @IsNotEmpty()
+  @IsIn(['inProgress', 'finished', 'canceled'])
+  state: string
+  @IsNotEmpty()
+  @IsNumber()
+  proyectId: number
+}
+
+export class CreateDocumentDTO {
+  @IsString()
+  @IsNotEmpty()
+  name: string
+  @IsString()
+  @IsNotEmpty()
+  description: string
+  @IsUrl()
+  @IsString()
+  url: string
+}
+
+export class CreateImgDTO {
+  @IsString()
+  @IsNotEmpty()
+  name: string
+  @IsString()
+  @IsNotEmpty()
+  description: string
+  @IsUrl()
+  @IsString()
+  url: string
+}
+
+export class CreateVideoDTO {
+  @IsString()
+  @IsNotEmpty()
+  name: string
+  @IsString()
+  @IsNotEmpty()
+  description: string
+  @IsUrl()
+  @IsString()
+  url: string
+}
+
+export class CreateTaskDTO {
+  @IsNotEmpty()
+  @IsString()
+  name: string
+  @IsNotEmpty()
+  @IsString()
+  description: string
+  @IsNotEmpty()
+  @IsString()
+  startDate: Date
+  @IsNotEmpty()
+  @IsString()
+  endDate: Date
+  @IsNotEmpty()
+  @IsIn(['to-do', 'in-progress', 'done'])
+  state: string
+  @IsNotEmpty()
+  @IsNumber()
+  springId: number
+}
+
+export class CreateItemDTO {
+  @IsOptional()
+  document: CreateDocumentDTO
+  @IsOptional()
+  img: CreateImgDTO
+  @IsOptional()
+  video: CreateVideoDTO
+  @IsNotEmpty()
+  @IsNumber()
+  taskId: number
 }

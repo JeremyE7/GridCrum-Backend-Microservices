@@ -67,10 +67,6 @@ model TaskTag {
 
 model Task {
   id          Int        @id @default(autoincrement())
-  x           Int
-  y           Int
-  w           Int
-  h           Int
   name        String
   description String
   startDate   DateTime
@@ -78,7 +74,7 @@ model Task {
   state       String
   springId    Int
   spring      Spring     @relation(fields: [springId], references: [id])
-  board       Board?
+  items       Item[]
   reminders   Reminder[]
   tags        TaskTag[]
 }
@@ -94,34 +90,20 @@ model Reminder {
   task        Task     @relation(fields: [taskId], references: [id])
 }
 
-model Board {
-  id          Int      @id @default(autoincrement())
-  name        String
-  description String
-  startDate   DateTime
-  endDate     DateTime
-  state       String
-  items       Item[]
-  task        Task     @relation(fields: [taskId], references: [id])
-  taskId      Int      @unique
-}
-
 model Item {
-  id      Int    @id @default(autoincrement())
-  x       Int
-  y       Int
-  w       Int
-  h       Int
-  board   Board  @relation(fields: [boardId], references: [id])
-  boardId Int    @unique
-  imgId   Int?   @unique
-  videoId Int?   @unique
-  audioId Int?   @unique
-  linkId  Int?   @unique
-  link    Link?  @relation(fields: [linkId], references: [id])
-  audio   Audio? @relation(fields: [audioId], references: [id])
-  video   Video? @relation(fields: [videoId], references: [id])
-  img     Img?   @relation(fields: [imgId], references: [id])
+  id         Int       @id @default(autoincrement())
+  x          Int
+  y          Int
+  w          Int
+  h          Int
+  imgId      Int?      @unique
+  videoId    Int?      @unique
+  video      Video?    @relation(fields: [videoId], references: [id])
+  img        Img?      @relation(fields: [imgId], references: [id])
+  document   Document? @relation(fields: [documentId], references: [id])
+  documentId Int?      @unique
+  taskId     Int
+  task       Task      @relation(fields: [taskId], references: [id])
 }
 
 model Img {
@@ -140,15 +122,7 @@ model Video {
   item        Item?
 }
 
-model Audio {
-  id          Int    @id @default(autoincrement())
-  name        String
-  description String
-  url         String
-  item        Item?
-}
-
-model Link {
+model Document {
   id          Int    @id @default(autoincrement())
   name        String
   description String

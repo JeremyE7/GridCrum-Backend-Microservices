@@ -19,6 +19,8 @@ export class GatewayController {
   getAllUserProjects(
     @Param('userId') userId: number,
   ): Promise<{ msg: string; projects: Project[] } | { msg: string; error: any }> {
+    console.log('obteniendo proyectos')
+
     return this.gatewayService.getAllUserProjects(userId)
   }
 
@@ -33,6 +35,7 @@ export class GatewayController {
   @Post('api/projects/:userId')
   createProject(@Body() req: Request, @Param('userId') userId: string) {
     console.log(req, userId)
+    console.log('creando proyecto')
 
     return this.gatewayService.createProject(req, userId)
   }
@@ -61,5 +64,29 @@ export class GatewayController {
   @Post('api/user/login')
   loginUser(@Body() req: Request) {
     return this.gatewayService.loginUser(req)
+  }
+
+  @Post('api/project/spring')
+  createSpring(@Body() req: Request) {
+    console.log('creando spring')
+    return this.gatewayService.createSpring(req)
+  }
+
+  @Post('api/project/spring/task')
+  createTask(@Body() req: Request) {
+    console.log('creando tarea')
+    return this.gatewayService.createTask(req)
+  }
+
+  @Post('api/project/spring/task/item')
+  createTaskItem(@Body() req: Request) {
+    console.log('creando item')
+    return this.gatewayService.createItem(req)
+  }
+
+  @Put('api/project/spring/task/item')
+  updateTaskItem(@Body() req: Request) {
+    console.log('actualizando item')
+    return this.gatewayService.updateItems(req)
   }
 }

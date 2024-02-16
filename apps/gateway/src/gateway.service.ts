@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common'
 import { ClientProxy } from '@nestjs/microservices'
-import { Project, ProjectTag, User } from '@prisma/client'
+import { Project, ProjectTag, Spring, User } from '@prisma/client'
 import { lastValueFrom } from 'rxjs'
 
 @Injectable()
@@ -70,6 +70,51 @@ export class GatewayService {
       return userLoged
     } catch (e) {
       throw new HttpException({ msg: e, user: null }, HttpStatus.BAD_REQUEST)
+    }
+  }
+
+  async createSpring(req: any): Promise<{ msg: string; spring: Spring }> {
+    try {
+      return await lastValueFrom(this.clientProject.send('create_spring', req))
+    } catch (error) {
+      throw new HttpException({ msg: error, spring: null }, HttpStatus.BAD_REQUEST)
+    }
+  }
+
+  async createTask(req: any): Promise<{ msg: string; task: any }> {
+    try {
+      console.log(req)
+
+      return await lastValueFrom(
+        this.clientProject.send('create_task', {
+          ...req,
+          springId: Number(req.springId),
+          startDate: new Date(req.startDate),
+          endDate: new Date(req.endDate),
+        }),
+      )
+    } catch (error) {
+      throw new HttpException({ msg: error, task: null }, HttpStatus.BAD_REQUEST)
+    }
+  }
+
+  async createItem(req: any): Promise<{ msg: string; item: any }> {
+    try {
+      console.log(req)
+
+      return await lastValueFrom(this.clientProject.send('create_item', { ...req, taskId: Number(req.taskId) }))
+    } catch (error) {
+      throw new HttpException({ msg: error, item: null }, HttpStatus.BAD_REQUEST)
+    }
+  }
+
+  async updateItems(req: any): Promise<{ msg: string; items: any }> {
+    try {
+      console.log(req)
+
+      return await lastValueFrom(this.clientProject.send('update_item', req))
+    } catch (error) {
+      throw new HttpException({ msg: error, items: null }, HttpStatus.BAD_REQUEST)
     }
   }
 }

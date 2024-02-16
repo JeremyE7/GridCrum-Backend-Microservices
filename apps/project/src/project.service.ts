@@ -1,6 +1,6 @@
 import { PrismaService } from '@app/prisma'
 import { Injectable } from '@nestjs/common'
-import { Project, ProjectTag } from '@prisma/client'
+import { Document, Img, Item, Project, ProjectTag, Spring, Task, Video } from '@prisma/client'
 
 @Injectable()
 export class ProjectService {
@@ -80,6 +80,22 @@ export class ProjectService {
         },
         include: {
           tags: true,
+          springs: {
+            include: {
+              tasks: {
+                include: {
+                  tags: true,
+                  items: {
+                    include: {
+                      document: true,
+                      img: true,
+                      video: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
       })
       return { msg: 'Solicitud exitosa', projects }
@@ -212,5 +228,157 @@ export class ProjectService {
 
       return { msg: 'Error en la solicitud', projects: null }
     }
+  }
+
+  async createSpring(spring: Omit<Spring, 'tasks' | 'id'>): Promise<{ msg: string; spring: Spring }> {
+    console.log('Dawdas')
+
+    try {
+      const newSpring = await this.prisma.spring.create({
+        data: {
+          name: spring.name,
+          description: spring.description,
+          proyect: {
+            connect: {
+              id: spring.proyectId,
+            },
+          },
+          startDate: spring.startDate,
+          endDate: spring.endDate,
+          state: spring.state,
+        },
+      })
+
+      return { msg: 'Sprint creado', spring: newSpring }
+    } catch (error) {
+      console.log('Error en la solicitud', error)
+
+      return { msg: 'Error en la solicitud', spring: null }
+    }
+  }
+
+  async createTask(
+    task: Omit<Task, 'id' | 'spring' | 'board' | 'reminders' | 'tags'>,
+  ): Promise<{ msg: string; task: Task }> {
+    try {
+      const newTask = await this.prisma.task.create({
+        data: {
+          name: task.name,
+          description: task.description,
+          startDate: task.startDate,
+          endDate: task.endDate,
+          state: task.state,
+          spring: {
+            connect: {
+              id: task.springId,
+            },
+          },
+        },
+      })
+
+      return { msg: 'Tarea creada', task: newTask }
+    } catch (error) {
+      console.log('Error en la solicitud', error)
+
+      return { msg: 'Error en la solicitud', task: null }
+    }
+  }
+
+  async createItem(
+    item: Omit<
+      Item & {
+        document?: Omit<Document, 'id' | 'itemId'>
+      } & {
+        img?: Omit<Img, 'id' | 'itemId'>
+      } & {
+        video?: Omit<Video, 'id' | 'itemId'>
+      },
+      'id' | 'spring' | 'board' | 'reminders' | 'tags' | 'documentId' | 'videoId' | 'imgId' | 'x' | 'y' | 'w' | 'h'
+    >,
+  ): Promise<{ msg: string; item: Item }> {
+    try {
+      console.log(item)
+
+      let newDocument: Document
+      let newImg: Img
+      let newVideo: Video
+      if (item.document) {
+        newDocument = await this.prisma.document.create({
+          data: {
+            name: item.document.name,
+            url: item.document.url,
+            description: item.document.description,
+          },
+        })
+      }
+
+      if (item.img) {
+        newImg = await this.prisma.img.create({
+          data: {
+            name: item.img.name,
+            url: item.img.url,
+            description: item.img.description,
+          },
+        })
+      }
+
+      if (item.video) {
+        newVideo = await this.prisma.video.create({
+          data: {
+            name: item.video.name,
+            url: item.video.url,
+            description: item.video.description,
+          },
+        })
+      }
+
+      const newItem = await this.prisma.item.create({
+        data: {
+          h: 2,
+          w: 2,
+          x: 0,
+          y: 0,
+          document: newDocument ? { connect: { id: newDocument.id } } : undefined,
+          img: newImg ? { connect: { id: newImg.id } } : undefined,
+          video: newVideo ? { connect: { id: newVideo.id } } : undefined,
+          task: {
+            connect: {
+              id: item.taskId,
+            },
+          },
+        },
+        include: {
+          document: true,
+          img: true,
+          video: true,
+        },
+      })
+
+      return { msg: 'Item creado', item: newItem }
+    } catch (error) {
+      console.log('Error en la solicitud', error)
+      return { msg: 'Error en la solicitud', item: null }
+    }
+  }
+  async updateItems(items: Item[]): Promise<{ msg: string; items: Item[] }> {
+    const updatedItems = await Promise.all(
+      items.map(async (item) => {
+        const updatedItem = await this.prisma.item.update({
+          where: {
+            id: item.id,
+          },
+          data: {
+            h: item.h,
+            w: item.w,
+            x: item.x,
+            y: item.y,
+          },
+        })
+
+        return updatedItem
+      }),
+    )
+
+    return { msg: 'Items actualizados', items: updatedItems }
   }
 }
