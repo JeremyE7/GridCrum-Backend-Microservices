@@ -14,9 +14,7 @@ export class UserController {
   }
 
   @MessagePattern('login_user')
-  loginUser(
-    req: LoginUserDto,
-  ): Promise<{ msg: string; user: User; token?: string }> {
+  loginUser(req: LoginUserDto): Promise<{ msg: string; user: User; token?: string }> {
     return this.userService.loginUser(req)
   }
 }
