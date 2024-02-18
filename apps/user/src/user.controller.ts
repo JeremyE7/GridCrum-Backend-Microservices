@@ -17,4 +17,9 @@ export class UserController {
   loginUser(req: LoginUserDto): Promise<{ msg: string; user: User; token?: string }> {
     return this.userService.loginUser(req)
   }
+
+  @MessagePattern('validate_token')
+  validateToken(token: string): Promise<{ msg: string; user: User }> {
+    return this.userService.validateToken(token)
+  }
 }

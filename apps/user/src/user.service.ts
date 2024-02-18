@@ -70,4 +70,14 @@ export class UserService {
 
     return { msg: 'User logged in', user, token }
   }
+
+  async validateToken(token: string): Promise<{ msg: string; user: User }> {
+    const payload = await this.jwtAuth.validateToken(token)
+
+    if (!payload) {
+      return { msg: 'Invalid token', user: null }
+    }
+
+    return { msg: 'Token is valid', user: payload }
+  }
 }

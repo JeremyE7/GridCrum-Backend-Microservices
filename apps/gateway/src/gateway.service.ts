@@ -73,6 +73,14 @@ export class GatewayService {
     }
   }
 
+  async validateToken(token: string): Promise<{ msg: string; user: User }> {
+    try {
+      return await lastValueFrom(this.clientUser.send('validate_token', token))
+    } catch (e) {
+      throw new HttpException({ msg: e, user: null }, HttpStatus.BAD_REQUEST)
+    }
+  }
+
   async createSpring(req: any): Promise<{ msg: string; spring: Spring }> {
     try {
       return await lastValueFrom(this.clientProject.send('create_spring', req))

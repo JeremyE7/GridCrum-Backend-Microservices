@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common'
 import { GatewayService } from './gateway.service'
 import { Project, ProjectTag } from '@prisma/client'
 import { Request } from 'express'
@@ -64,6 +64,13 @@ export class GatewayController {
   @Post('api/user/login')
   loginUser(@Body() req: Request) {
     return this.gatewayService.loginUser(req)
+  }
+
+  @Post('api/user/validate')
+  validateToken(@Req() req: Request) {
+    console.log(req.headers.authorization)
+
+    return this.gatewayService.validateToken(req.headers.authorization)
   }
 
   @Post('api/project/spring')
